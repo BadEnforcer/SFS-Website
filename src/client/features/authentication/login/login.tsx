@@ -5,12 +5,8 @@ import {useNavigate} from "react-router-dom";
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import googleSignInHandler from "./googleHandler";
-import setDefaultClaimsReq from "./setDefaultClaims";
-
-const server_url = import.meta.env.VITE_API_SERVER_URL;
-
-
+import googleSignInHandler from "./googleLoginHandler";
+import {handleEmailLogin} from "./emailLoginHandler";
 
 const LoginPage:React.FC = () => {
     const [email, setEmail] = React.useState("");
@@ -18,28 +14,21 @@ const LoginPage:React.FC = () => {
 
     const [error_message, setError_message] = React.useState<undefined | string>(undefined);
 
-    React.useEffect(() => {
-        if(error_message) {
-            toast.error(error_message, {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-                transition: Slide,
-            });
-        }
-    }, []) // unmount after first render
 
     const navigate = useNavigate();
+
+    React.useEffect(() => {
+        if (error_message) {
+            toast.error(error_message, {
+                theme: "colored",
+            });
+        }
+    }, [])
 
     return (
     <div>
         <ToastContainer
-            position="top-center"
+            position="top-right"
             autoClose={5000}
             hideProgressBar
             newestOnTop
@@ -49,15 +38,21 @@ const LoginPage:React.FC = () => {
             draggable
             pauseOnHover
             theme="colored"
+            limit={2}
+            transition={Slide}
         />
         <form>
             <label>Email</label>
-            <input type={"email"} />
+            <input type={"email"} onChange={(e) => {setEmail(e.target.value)}} />
             <label>Password</label>
-            <input type={"password"} />
+            <input type={"password"} onChange={(e) => setPassword(e.target.value) } />
+            <button onClick={async (e) => {
+                e.preventDefault();
+                await handleEmailLogin(email, password, navigate);
+            }}>Login</button>
         </form>
         <button
-        onClick={async () => await googleSignInHandler(navigate, setDefaultClaimsReq, server_url)}
+        onClick={async () => await googleSignInHandler(navigate)}
         >Sign in with google</button>
     </div>
     )

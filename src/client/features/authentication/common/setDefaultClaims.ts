@@ -4,7 +4,7 @@ import lib from "../../../../lib";
 import debug from "debug";
 
 const log = debug("app:login:set-default-claims");
-import {navigateToLoginWithError} from "./navigateToLoginWithError";
+import {navigateToLoginWithError} from "../login/navigateToLoginWithError";
 
 /**
  * @description sets default claims for a user.
@@ -15,7 +15,10 @@ import {navigateToLoginWithError} from "./navigateToLoginWithError";
  * @param server_url - server url.
  * @returns void
  * */
-const setDefaultClaimsReq = async (navigate:NavigateFunction, uid:string, server_url:string) => {
+
+const server_url = import.meta.env.VITE_API_SERVER_URL as string;
+
+const setDefaultClaimsReq = async (navigate:NavigateFunction, uid:string) => {
     try {
         await lib.axiosWrapper('POST', server_url + '/auth/set-default-claims' ,{uid})
         log('default claims set successfully. navigating to role selection.')

@@ -54,6 +54,7 @@ const LoginPage:React.FC = () => {
         <button
         onClick={async () => await googleSignInHandler(navigate)}
         >Sign in with google</button>
+        <button onClick={() => navigate('/signup')}>Signup Instead?</button>
     </div>
     )
 }
